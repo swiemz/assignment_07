@@ -30,7 +30,8 @@ from rivals import CAFES, MENUS_FILE, OUR_CAFE, run_scraper
 #    st.title: Salt City: Scrape the Rivals
 #    st.markdown: one sentence, e.g. "Pick the cafés to scrape. Each run replaces
 #    the saved dataset."
-#
+st.title("Salt City: Scrape the Rivals")
+st.markdown("Pick the cafés to scrape. Each run replaces the saved dataset.")
 # 2. PICK AND SCRAPE
 #    a. cafes <- st.multiselect labeled "Cafés", key "cafes", options list(CAFES),
 #       every café selected by default.
@@ -43,10 +44,30 @@ from rivals import CAFES, MENUS_FILE, OUR_CAFE, run_scraper
 #          otherwise              -> st.error saying the scraper failed, and
 #                                    st.code(the end of result.stderr) — the
 #                                    Python error, so you can fix it.
-#
+options = list(CAFES)
+cafes = st.multiselect(
+    "Cafés",
+    options=options,
+    default=options,
+    key="cafes",
+)
+
+if st.button("Scrape", key="scrape") and cafes:
+    with st.spinner("Scraping the selected cafés…"):
+        result = run_scraper(cafes)
+
+    if result.returncode == 0:
+        output_lines = result.stdout.strip().splitlines()
+        st.success(output_lines[-1] if output_lines else "Scrape complete.")
+    else:
+        st.error("The scraper failed.")
+        st.code(result.stderr[-2000:])
 # 3. NOTHING TO SHOW YET?
 #    If MENUS_FILE does not exist: st.info("No menus yet — ...") and st.stop().
-#
+if not os.path.exists(MENUS_FILE):
+    st.info("No menus yet — select at least one café and click Scrape.")
+    st.stop()
+
 # 4. THE DATASET
 #    menus <- pd.read_csv(MENUS_FILE); theirs <- the rows whose cafe is not OUR_CAFE
 #    Three st.metric cards side by side (st.columns(3)), all about `theirs`:
@@ -55,3 +76,24 @@ from rivals import CAFES, MENUS_FILE, OUR_CAFE, run_scraper
 #    st.dataframe(menus, hide_index=True)
 #    st.download_button "Download the dataset" with menus.to_csv(index=False),
 #       file_name "menus.csv", mime "text/csv", key "download"
+menus = pd.read_csv(MENUS_FILE)
+theirs = menus.loc[menus["cafe"] != OUR_CAFE]
+
+cafe_count = theirs["cafe"].nunique()
+item_count = len(theirs[["cafe", "item"]].drop_duplicates())
+row_count = len(theirs)
+
+cafe_column, item_column, row_column = st.columns(3)
+cafe_column.metric("Cafés", cafe_count)
+item_column.metric("Items", item_count)
+row_column.metric("Rows", row_count)
+
+st.dataframe(menus, hide_index=True)
+
+st.download_button(
+    "Download the dataset",
+    data=menus.to_csv(index=False),
+    file_name="menus.csv",
+    mime="text/csv",
+    key="download",
+)
