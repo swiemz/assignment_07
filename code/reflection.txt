@@ -1,8 +1,11 @@
-Write your reflection here.
-
-See reflection.md for what makes a good reflection — be specific, use the
-terminology from this assignment (HTML element, CSS selector, class and id
-selectors, sibling selector, inner_text, attribute, headless browser, waiting for
-JavaScript, crawling, pagination, read_html, melt, fuzzy matching, normalization,
-threshold, human in the loop, merge indicator, gap analysis), and make it
-actionable.
+One thing this assignment made me realize is how much the structure of a webpage determines the way I collect data.
+In this assignment, the three coffee shop pages all lived in different sections, and I had to use a variety
+of techniques to scrape the text. For example, I used CSS selectors for Lakeshore Lattes, read_html() and melt() 
+functions for Hilltop Grind, and I had to manually look up item prices as they were buried in the Canal Street coffee
+webpage. I found this assignment very challenging, particularly in step 7, when writing the match_items function. It 
+was difficult because I had to keep track of both how similar two names were and what the owner had already decided. 
+It was overall a very tedious assignment, and I relied on AI tools to vibe code a few of the sections. While I understand the
+overall structure of the assignment, I found it extremeley difficult to write a code that made sense. When I eventually did finish 
+the sections, I didn't run into trouble with the tests. In the future, I would like to spend more time
+working with scraper functions, because I do think it is an interesting and relevant technique. However, I need to build more
+confidence around the codign aspect itself, instead of relying heavily on AI. 
